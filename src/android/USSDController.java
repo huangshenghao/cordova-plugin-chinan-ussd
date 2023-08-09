@@ -45,6 +45,7 @@ public class USSDController implements USSDInterface, USSDApi {
     protected static final String KEY_ERROR = "KEY_ERROR";
 
     protected Boolean isRunning = false;
+    protected Boolean sendSign = false;
 
     private USSDInterface ussdInterface;
 
@@ -197,6 +198,7 @@ public class USSDController implements USSDInterface, USSDApi {
 
     public void send(String text, CallbackMessage callbackMessage) {
         this.callbackMessage = callbackMessage;
+        this.sendSign = true;
         ussdInterface.sendData(text);
     }
 
