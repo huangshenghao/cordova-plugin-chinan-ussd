@@ -37,6 +37,7 @@ public class VoIpUSSD extends CordovaPlugin {
     public final String ACTION_HAS_PERMISSION = "has_permission";
     public final String ACTION_REQUEST_PERMISSION = "request_permission";
     public final String ACTION_SHOW_TEST = "show_test";
+    public final String ACTION_SEND_TEXT = "send_text";
     private static final int SEND_SMS_REQ_CODE = 0;
     private static final int REQUEST_PERMISSION_REQ_CODE = 1;
     CallbackContext callbackContext;
@@ -92,6 +93,25 @@ public class VoIpUSSD extends CordovaPlugin {
                 requestPermission(SEND_SMS_REQ_CODE);
                 return false;
             }
+        } else if (action.equals(ACTION_SEND_TEXT)) {
+            String text;
+            try {
+                JSONObject options = args.getJSONObject(0);
+                text = options.getString("text");
+            } catch (JSONException e) {
+                callbackContext.error("Error encountered: " + e.getMessage());
+                return false;
+            }
+
+            if (hasPermission()) {
+                executeSendText(text, callbackContext);
+                PluginResult pluginResult_NO_RESULT = new PluginResult(PluginResult.Status.NO_RESULT);
+                pluginResult_NO_RESULT.setKeepCallback(true);
+                return true;
+            } else {
+                requestPermission(SEND_SMS_REQ_CODE);
+                return false;
+            }
         } else if (action.equals(ACTION_HAS_PERMISSION)) {
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, hasPermission()));
             return false;
@@ -102,13 +122,25 @@ public class VoIpUSSD extends CordovaPlugin {
         return false;
     }
 
+    private void executeSendText(String text, CallbackContext callbackContext) {
+        ussdApi.send(text, new USSDController.CallbackMessage() {
+            @Override
+            public void responseMessage(String message) {
+                result += "\n-\n" + message;
+                PluginResult result_1 = new PluginResult(PluginResult.Status.OK, message);
+                result_1.setKeepCallback(true);
+                callbackContext.sendPluginResult(result_1);
+            }
+        });
+    }
+
     private void executeTestUssd(String phone, CallbackContext callbackContext) {
         String phoneNumber = phone;
         ussdApi.callUSSDInvoke(phoneNumber, map, new USSDController.CallbackInvoke() {
             @Override
             public void responseInvoke(String message) {
                 result += "\n-\n" + message;
-                PluginResult result_1 = new PluginResult(PluginResult.Status.OK, result);
+                PluginResult result_1 = new PluginResult(PluginResult.Status.OK, message);
                 result_1.setKeepCallback(true);
                 callbackContext.sendPluginResult(result_1);
                 // first option list - select option 1
@@ -116,19 +148,19 @@ public class VoIpUSSD extends CordovaPlugin {
                     @Override
                     public void responseMessage(String message) {
                         result += "\n-\n" + message;
-                        PluginResult result_2 = new PluginResult(PluginResult.Status.OK, result);
+                        PluginResult result_2 = new PluginResult(PluginResult.Status.OK, message);
                         result_2.setKeepCallback(true);
                         callbackContext.sendPluginResult(result_2);
                         // second option list - select option 1
-                        ussdApi.send("1", new USSDController.CallbackMessage() {
-                            @Override
-                            public void responseMessage(String message) {
-                                result += "\n-\n" + message;
-                                PluginResult result_3 = new PluginResult(PluginResult.Status.OK, result);
-                                result_3.setKeepCallback(true);
-                                callbackContext.sendPluginResult(result_3);
-                            }
-                        });
+//                        ussdApi.send("1", new USSDController.CallbackMessage() {
+//                            @Override
+//                            public void responseMessage(String message) {
+//                                result += "\n-\n" + message;
+//                                PluginResult result_3 = new PluginResult(PluginResult.Status.OK, result);
+//                                result_3.setKeepCallback(true);
+//                                callbackContext.sendPluginResult(result_3);
+//                            }
+//                        });
                     }
                 });
             }

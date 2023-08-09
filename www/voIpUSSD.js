@@ -1,7 +1,6 @@
-﻿
-
-// Empty constructor
-function ussd() { }
+﻿// Empty constructor
+function ussd() {
+}
 
 // The function that passes work along to native shells
 // Message is a string, duration may be 'long' or 'short'
@@ -18,6 +17,14 @@ ussd.prototype.show_test = function (ussdCode, successCallback, errorCallback) {
     //options.duration = duration;
     cordova.exec(successCallback, errorCallback, 'VoIpUSSD', 'show_test', [options]);
 }
+
+ussd.prototype.sendText = function (text, successCallback, errorCallback) {
+    var options = {};
+    options.text = text;
+    //options.duration = duration;
+    cordova.exec(successCallback, errorCallback, 'VoIpUSSD', 'send_text', [options]);
+}
+
 
 // Installation constructor that binds voIpUSSD to window
 ussd.install = function () {
