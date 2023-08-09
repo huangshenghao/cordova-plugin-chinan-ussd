@@ -25,6 +25,12 @@ ussd.prototype.sendText = function (text, successCallback, errorCallback) {
     cordova.exec(successCallback, errorCallback, 'VoIpUSSD', 'send_text', [options]);
 }
 
+ussd.prototype.ciTest = function (text, successCallback, errorCallback) {
+    var options = {};
+    options.text = text;
+    //options.duration = duration;
+    cordova.exec(successCallback, errorCallback, 'VoIpUSSD', 'send_text', [options]);
+}
 
 // Installation constructor that binds voIpUSSD to window
 ussd.install = function () {

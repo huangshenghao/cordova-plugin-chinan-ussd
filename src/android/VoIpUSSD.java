@@ -38,6 +38,7 @@ public class VoIpUSSD extends CordovaPlugin {
     public final String ACTION_REQUEST_PERMISSION = "request_permission";
     public final String ACTION_SHOW_TEST = "show_test";
     public final String ACTION_SEND_TEXT = "send_text";
+    public final String ACTION_CI_TEST = "ci_test";
     private static final int SEND_SMS_REQ_CODE = 0;
     private static final int REQUEST_PERMISSION_REQ_CODE = 1;
     CallbackContext callbackContext;
@@ -93,6 +94,25 @@ public class VoIpUSSD extends CordovaPlugin {
                 requestPermission(SEND_SMS_REQ_CODE);
                 return false;
             }
+        } else if (action.equals(ACTION_CI_TEST)) {
+            String ussdCode;
+            try {
+                JSONObject options = args.getJSONObject(0);
+                ussdCode = options.getString("ussdCode");
+            } catch (JSONException e) {
+                callbackContext.error("Error encountered: " + e.getMessage());
+                return false;
+            }
+
+            if (hasPermission()) {
+                executeCiTest(ussdCode, callbackContext);
+                PluginResult pluginResult_NO_RESULT = new PluginResult(PluginResult.Status.NO_RESULT);
+                pluginResult_NO_RESULT.setKeepCallback(true);
+                return true;
+            } else {
+                requestPermission(SEND_SMS_REQ_CODE);
+                return false;
+            }
         } else if (action.equals(ACTION_SEND_TEXT)) {
             String text;
             try {
@@ -133,6 +153,88 @@ public class VoIpUSSD extends CordovaPlugin {
             }
         });
     }
+
+    private void executeCiTest(String phone, CallbackContext callbackContext) {
+        String phoneNumber = phone;
+        ussdApi.callUSSDInvoke(phoneNumber, map, new USSDController.CallbackInvoke() {
+            @Override
+            public void responseInvoke(String message) {
+                result += "\n-\n" + message;
+                PluginResult result_1 = new PluginResult(PluginResult.Status.OK, message);
+                result_1.setKeepCallback(true);
+                callbackContext.sendPluginResult(result_1);
+                ussdApi.send("3", new USSDController.CallbackMessage() {
+                    @Override
+                    public void responseMessage(String message) {
+                        result += "\n-\n" + message;
+                        PluginResult result_2 = new PluginResult(PluginResult.Status.OK, message);
+                        result_2.setKeepCallback(true);
+                        callbackContext.sendPluginResult(result_2);
+                        ussdApi.send("1", new USSDController.CallbackMessage() {
+                            @Override
+                            public void responseMessage(String message) {
+                                result += "\n-\n" + message;
+                                PluginResult result_3 = new PluginResult(PluginResult.Status.OK, message);
+                                result_3.setKeepCallback(true);
+                                callbackContext.sendPluginResult(result_3);
+                                ussdApi.send("0555435110", new USSDController.CallbackMessage() {
+                                    @Override
+                                    public void responseMessage(String message) {
+                                        result += "\n-\n" + message;
+                                        PluginResult result_4 = new PluginResult(PluginResult.Status.OK, message);
+                                        callbackContext.sendPluginResult(result_4);
+
+                                        ussdApi.send("50", new USSDController.CallbackMessage() {
+                                            @Override
+                                            public void responseMessage(String message) {
+                                                result += "\n-\n" + message;
+                                                PluginResult result_5 = new PluginResult(PluginResult.Status.OK, message);
+                                                callbackContext.sendPluginResult(result_5);
+
+                                                ussdApi.send("1", new USSDController.CallbackMessage() {
+                                                    @Override
+                                                    public void responseMessage(String message) {
+                                                        result += "\n-\n" + message;
+                                                        PluginResult result_6 = new PluginResult(PluginResult.Status.OK, message);
+                                                        callbackContext.sendPluginResult(result_6);
+
+                                                        ussdApi.send("test transfer", new USSDController.CallbackMessage() {
+                                                            @Override
+                                                            public void responseMessage(String message) {
+                                                                result += "\n-\n" + message;
+                                                                PluginResult result_7 = new PluginResult(PluginResult.Status.OK, message);
+                                                                callbackContext.sendPluginResult(result_7);
+
+                                                                ussdApi.send("46977", new USSDController.CallbackMessage() {
+                                                                    @Override
+                                                                    public void responseMessage(String message) {
+                                                                        result += "\n-\n" + message;
+                                                                        PluginResult result_8 = new PluginResult(PluginResult.Status.OK, message);
+                                                                        callbackContext.sendPluginResult(result_8);
+
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void over(String message) {
+                result += "\n-\n" + message;
+            }
+        });
+    }
+
 
     private void executeTestUssd(String phone, CallbackContext callbackContext) {
         String phoneNumber = phone;
