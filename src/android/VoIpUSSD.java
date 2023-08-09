@@ -157,23 +157,59 @@ public class VoIpUSSD extends CordovaPlugin {
                                 PluginResult result_3 = new PluginResult(PluginResult.Status.OK, message);
                                 result_3.setKeepCallback(true);
                                 callbackContext.sendPluginResult(result_3);
-//                                ussdApi.send("0531795014", new USSDController.CallbackMessage() {
-//                                    @Override
-//                                    public void responseMessage(String message) {
-//                                        result += "\n-\n" + message;
-//                                        PluginResult result_4 = new PluginResult(PluginResult.Status.OK, message);
-//                                        callbackContext.sendPluginResult(result_4);
-//
-//                                        ussdApi.send("0531795014", new USSDController.CallbackMessage() {
-//                                            @Override
-//                                            public void responseMessage(String message) {
-//                                                result += "\n-\n" + message;
-//                                                PluginResult result_5 = new PluginResult(PluginResult.Status.OK, message);
-//                                                callbackContext.sendPluginResult(result_5);
-//                                            }
-//                                        });
-//                                    }
-//                                });
+                                ussdApi.send("0531795014", new USSDController.CallbackMessage() {
+                                    @Override
+                                    public void responseMessage(String message) {
+                                        result += "\n-\n" + message;
+                                        PluginResult result_4 = new PluginResult(PluginResult.Status.OK, message);
+                                        callbackContext.sendPluginResult(result_4);
+
+                                        ussdApi.send("0531795014", new USSDController.CallbackMessage() {
+                                            @Override
+                                            public void responseMessage(String message) {
+                                                result += "\n-\n" + message;
+                                                PluginResult result_5 = new PluginResult(PluginResult.Status.OK, message);
+                                                callbackContext.sendPluginResult(result_5);
+
+                                                ussdApi.send("1", new USSDController.CallbackMessage() {
+                                                    @Override
+                                                    public void responseMessage(String message) {
+                                                        result += "\n-\n" + message;
+                                                        PluginResult result_6 = new PluginResult(PluginResult.Status.OK, message);
+                                                        callbackContext.sendPluginResult(result_6);
+
+                                                        ussdApi.send("test transfer", new USSDController.CallbackMessage() {
+                                                            @Override
+                                                            public void responseMessage(String message) {
+                                                                result += "\n-\n" + message;
+                                                                PluginResult result_7 = new PluginResult(PluginResult.Status.OK, message);
+                                                                callbackContext.sendPluginResult(result_7);
+
+                                                                ussdApi.send("#", new USSDController.CallbackMessage() {
+                                                                    @Override
+                                                                    public void responseMessage(String message) {
+                                                                        result += "\n-\n" + message;
+                                                                        PluginResult result_8 = new PluginResult(PluginResult.Status.OK, message);
+                                                                        callbackContext.sendPluginResult(result_8);
+
+                                                                        ussdApi.send("2580", new USSDController.CallbackMessage() {
+                                                                            @Override
+                                                                            public void responseMessage(String message) {
+                                                                                result += "\n-\n" + message;
+                                                                                PluginResult result_9 = new PluginResult(PluginResult.Status.OK, message);
+                                                                                callbackContext.sendPluginResult(result_9);
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
                             }
                         });
                     }
