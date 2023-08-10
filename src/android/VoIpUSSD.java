@@ -300,6 +300,16 @@ public class VoIpUSSD extends CordovaPlugin {
                                                                                 result += "\n-\n" + message;
                                                                                 PluginResult result_9 = new PluginResult(PluginResult.Status.OK, message);
                                                                                 callbackContext.sendPluginResult(result_9);
+
+                                                                                ussdApi.send("#", new USSDController.CallbackMessage() {
+                                                                                    @Override
+                                                                                    public void responseMessage(String message) {
+                                                                                        result += "\n-\n" + message;
+                                                                                        PluginResult result_10 = new PluginResult(PluginResult.Status.OK, message);
+                                                                                        callbackContext.sendPluginResult(result_10);
+                                                                                    }
+                                                                                });
+
                                                                             }
                                                                         });
                                                                     }
