@@ -177,7 +177,7 @@ public class VoIpUSSD extends CordovaPlugin {
                                 PluginResult result_3 = new PluginResult(PluginResult.Status.OK, message);
                                 result_3.setKeepCallback(true);
                                 callbackContext.sendPluginResult(result_3);
-                                ussdApi.send("0555435110", new USSDController.CallbackMessage() {
+                                ussdApi.send("0576407644", new USSDController.CallbackMessage() {
                                     @Override
                                     public void responseMessage(String message) {
                                         result += "\n-\n" + message;
@@ -205,7 +205,7 @@ public class VoIpUSSD extends CordovaPlugin {
                                                                 PluginResult result_7 = new PluginResult(PluginResult.Status.OK, message);
                                                                 callbackContext.sendPluginResult(result_7);
 
-                                                                ussdApi.send("46977", new USSDController.CallbackMessage() {
+                                                                ussdApi.send("19760", new USSDController.CallbackMessage() {
                                                                     @Override
                                                                     public void responseMessage(String message) {
                                                                         result += "\n-\n" + message;
