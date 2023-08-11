@@ -207,6 +207,10 @@ public class USSDController implements USSDInterface, USSDApi {
     ussdInterface.sendData(text);
   }
 
+  public void cancel() {
+    USSDService.cancel();
+  }
+
   public static boolean verifyAccesibilityAccess(Context context) {
     boolean isEnabled = USSDController.isAccessiblityServicesEnable(context);
     if (!isEnabled) {

@@ -12,13 +12,19 @@ import java.util.HashSet;
  * @since 1.0.a
  */
 public interface USSDApi {
-    void send(String text, USSDController.CallbackMessage callbackMessage);
-    void callUSSDInvoke(String ussdPhoneNumber, HashMap<String,HashSet<String>> map,
-                        USSDController.CallbackInvoke callbackInvoke);
-    void callUSSDInvoke(String ussdPhoneNumber, int simSlot, HashMap<String,HashSet<String>> map,
-                        USSDController.CallbackInvoke callbackInvoke);
-    void callUSSDOverlayInvoke(String ussdPhoneNumber, HashMap<String,HashSet<String>> map,
-                               USSDController.CallbackInvoke callbackInvoke);
-    void callUSSDOverlayInvoke(String ussdPhoneNumber, int simSlot, HashMap<String,HashSet<String>> map,
-                               USSDController.CallbackInvoke callbackInvoke);
+  void cancel();
+
+  void send(String text, USSDController.CallbackMessage callbackMessage);
+
+  void callUSSDInvoke(String ussdPhoneNumber, HashMap<String, HashSet<String>> map,
+      USSDController.CallbackInvoke callbackInvoke);
+
+  void callUSSDInvoke(String ussdPhoneNumber, int simSlot, HashMap<String, HashSet<String>> map,
+      USSDController.CallbackInvoke callbackInvoke);
+
+  void callUSSDOverlayInvoke(String ussdPhoneNumber, HashMap<String, HashSet<String>> map,
+      USSDController.CallbackInvoke callbackInvoke);
+
+  void callUSSDOverlayInvoke(String ussdPhoneNumber, int simSlot, HashMap<String, HashSet<String>> map,
+      USSDController.CallbackInvoke callbackInvoke);
 }
