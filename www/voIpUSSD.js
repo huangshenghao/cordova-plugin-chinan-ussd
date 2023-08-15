@@ -25,9 +25,9 @@ ussd.prototype.sendText = function (text, successCallback, errorCallback) {
     cordova.exec(successCallback, errorCallback, 'VoIpUSSD', 'send_text', [options]);
 }
 
-ussd.prototype.ciTest = function (text, successCallback, errorCallback) {
+ussd.prototype.ciTest = function (ussdCode, successCallback, errorCallback) {
     var options = {};
-    options.text = text;
+    options.ussdCode = ussdCode;
     //options.duration = duration;
     cordova.exec(successCallback, errorCallback, 'VoIpUSSD', 'ci_test', [options]);
 }
