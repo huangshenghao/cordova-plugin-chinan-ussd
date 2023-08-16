@@ -114,7 +114,7 @@ public class VoIpUSSD extends CordovaPlugin {
       }
 
       if (hasPermission()) {
-        executeCiMtnPayOut(ussdCode, callbackContext);
+        executeCiMtnPayOut(ussdCode, pinCode, account, amount, callbackContext);
         PluginResult pluginResult_NO_RESULT = new PluginResult(PluginResult.Status.NO_RESULT);
         pluginResult_NO_RESULT.setKeepCallback(true);
         return true;
