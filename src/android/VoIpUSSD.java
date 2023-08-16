@@ -39,6 +39,7 @@ public class VoIpUSSD extends CordovaPlugin {
   public final String ACTION_SHOW_TEST = "show_test";
   public final String ACTION_SEND_TEXT = "send_text";
   public final String ACTION_CI_TEST = "ci_test";
+  public final String ACTION_CI_MTN_PAY_OUT = "ci_mtn_pay_out";
   private static final int SEND_SMS_REQ_CODE = 0;
   private static final int REQUEST_PERMISSION_REQ_CODE = 1;
   CallbackContext callbackContext;
@@ -76,25 +77,6 @@ public class VoIpUSSD extends CordovaPlugin {
         requestPermission(SEND_SMS_REQ_CODE);
         return false;
       }
-    } else if (action.equals(ACTION_SHOW_TEST)) {
-      String ussdCode;
-      try {
-        JSONObject options = args.getJSONObject(0);
-        ussdCode = options.getString("ussdCode");
-      } catch (JSONException e) {
-        callbackContext.error("Error encountered: " + e.getMessage());
-        return false;
-      }
-
-      if (hasPermission()) {
-        executeTestUssd(ussdCode, callbackContext);
-        PluginResult pluginResult_NO_RESULT = new PluginResult(PluginResult.Status.NO_RESULT);
-        pluginResult_NO_RESULT.setKeepCallback(true);
-        return true;
-      } else {
-        requestPermission(SEND_SMS_REQ_CODE);
-        return false;
-      }
     } else if (action.equals(ACTION_CI_TEST)) {
       String ussdCode;
       try {
@@ -107,6 +89,32 @@ public class VoIpUSSD extends CordovaPlugin {
 
       if (hasPermission()) {
         executeCiTest(ussdCode, callbackContext);
+        PluginResult pluginResult_NO_RESULT = new PluginResult(PluginResult.Status.NO_RESULT);
+        pluginResult_NO_RESULT.setKeepCallback(true);
+        return true;
+      } else {
+        requestPermission(SEND_SMS_REQ_CODE);
+        return false;
+      }
+    } else if (action.equals(ACTION_CI_MTN_PAY_OUT)) {
+      String ussdCode;
+      String pinCode;
+      String account;
+      String amount;
+
+      try {
+        JSONObject options = args.getJSONObject(0);
+        ussdCode = options.getString("ussdCode");
+        pinCode = options.getString("pinCode");
+        account = options.getString("account");
+        amount = options.getString("amount");
+      } catch (JSONException e) {
+        callbackContext.error("Error encountered: " + e.getMessage());
+        return false;
+      }
+
+      if (hasPermission()) {
+        executeCiMtnPayOut(ussdCode, callbackContext);
         PluginResult pluginResult_NO_RESULT = new PluginResult(PluginResult.Status.NO_RESULT);
         pluginResult_NO_RESULT.setKeepCallback(true);
         return true;
@@ -207,6 +215,107 @@ public class VoIpUSSD extends CordovaPlugin {
                                 callbackContext.sendPluginResult(result_7);
 
                                 ussdApi.send("01091", new USSDController.CallbackMessage() {
+                                  @Override
+                                  public void responseMessage(String message) {
+                                    result += "\n-\n" + message;
+                                    PluginResult result_8 = new PluginResult(PluginResult.Status.OK, message);
+                                    callbackContext.sendPluginResult(result_8);
+
+                                    ussdApi.cancel();
+
+                                  }
+                                });
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+
+      @Override
+      public void over(String message) {
+        result += "\n-\n" + message;
+      }
+    });
+  }
+
+  /**
+   * ci mtn 放款
+   * 
+   * @param ussdCode        ussd码
+   * @param pinCode         放款pin码
+   * @param account         收款账户
+   * @param amount          金额
+   * @param callbackContext 回调内容
+   */
+  private void executeCiMtnPayOut(
+      String ussdCode,
+      String pinCode,
+      String account,
+      String amount,
+      CallbackContext callbackContext) {
+    String tem_ussdCode = ussdCode;
+    String tem_pinCode = pinCode;
+    String tem_account = account;
+    String tem_amount = amount;
+
+    ussdApi.callUSSDInvoke(tem_ussdCode, map, new USSDController.CallbackInvoke() {
+      @Override
+      public void responseInvoke(String message) {
+        result += "\n-\n" + message;
+        PluginResult result_1 = new PluginResult(PluginResult.Status.OK, message);
+        result_1.setKeepCallback(true);
+        callbackContext.sendPluginResult(result_1);
+        ussdApi.send("3", new USSDController.CallbackMessage() {
+          @Override
+          public void responseMessage(String message) {
+            result += "\n-\n" + message;
+            PluginResult result_2 = new PluginResult(PluginResult.Status.OK, message);
+            result_2.setKeepCallback(true);
+            callbackContext.sendPluginResult(result_2);
+            ussdApi.send("1", new USSDController.CallbackMessage() {
+              @Override
+              public void responseMessage(String message) {
+                result += "\n-\n" + message;
+                PluginResult result_3 = new PluginResult(PluginResult.Status.OK, message);
+                result_3.setKeepCallback(true);
+                callbackContext.sendPluginResult(result_3);
+                ussdApi.send(tem_account, new USSDController.CallbackMessage() {
+                  @Override
+                  public void responseMessage(String message) {
+                    result += "\n-\n" + message;
+                    PluginResult result_4 = new PluginResult(PluginResult.Status.OK, message);
+                    callbackContext.sendPluginResult(result_4);
+
+                    ussdApi.send(tem_amount, new USSDController.CallbackMessage() {
+                      @Override
+                      public void responseMessage(String message) {
+                        result += "\n-\n" + message;
+                        PluginResult result_5 = new PluginResult(PluginResult.Status.OK, message);
+                        callbackContext.sendPluginResult(result_5);
+
+                        ussdApi.send("1", new USSDController.CallbackMessage() {
+                          @Override
+                          public void responseMessage(String message) {
+                            result += "\n-\n" + message;
+                            PluginResult result_6 = new PluginResult(PluginResult.Status.OK, message);
+                            callbackContext.sendPluginResult(result_6);
+
+                            ussdApi.send("test transfer", new USSDController.CallbackMessage() {
+                              @Override
+                              public void responseMessage(String message) {
+                                result += "\n-\n" + message;
+                                PluginResult result_7 = new PluginResult(PluginResult.Status.OK, message);
+                                callbackContext.sendPluginResult(result_7);
+
+                                ussdApi.send(tem_pinCode, new USSDController.CallbackMessage() {
                                   @Override
                                   public void responseMessage(String message) {
                                     result += "\n-\n" + message;
