@@ -13,6 +13,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * AccessibilityService for ussd windows on Android mobile Telcom
@@ -23,210 +24,217 @@ import java.util.List;
  */
 public class USSDService extends AccessibilityService {
 
-    private static String TAG = USSDService.class.getSimpleName();
+  private static String TAG = USSDService.class.getSimpleName();
 
-    private static AccessibilityEvent event;
+  private static AccessibilityEvent event;
 
-    /**
-     * Catch widget by Accessibility, when is showing at mobile display
-     *
-     * @param event AccessibilityEvent
-     */
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        this.event = event;
+  /**
+   * Catch widget by Accessibility, when is showing at mobile display
+   *
+   * @param event AccessibilityEvent
+   */
+  @Override
+  public void onAccessibilityEvent(AccessibilityEvent event) {
+    this.event = event;
 
-        Log.d(TAG, "onAccessibilityEvent");
+    Log.d(TAG, "onAccessibilityEvent");
 
-        Log.d(TAG, String.format(
-                "onAccessibilityEvent: [type] %s [class] %s [package] %s [time] %s [text] %s",
-                event.getEventType(), event.getClassName(), event.getPackageName(),
-                event.getEventTime(), event.getText()));
+    Log.d(TAG, String.format(
+        "onAccessibilityEvent: [type] %s [class] %s [package] %s [time] %s [text] %s",
+        event.getEventType(), event.getClassName(), event.getPackageName(),
+        event.getEventTime(), event.getText()));
 
-        if (USSDController.instance == null || !USSDController.instance.isRunning) {
-            return;
-        }
-
-        if (LoginView(event) && notInputText(event)) {
-            // first view or logView, do nothing, pass / FIRST MESSAGE
-            clickOnButton(event, 0);
-            USSDController.instance.isRunning = false;
-            USSDController.instance.callbackInvoke.over(event.getText().get(0).toString());
-        } else if (problemView(event) || LoginView(event)) {
-            // deal down
-            clickOnButton(event, 1);
-            USSDController.instance.callbackInvoke.over(event.getText().get(0).toString());
-        } else if (isUSSDWidget(event)) {
-            // ready for work
-            String response = event.getText().get(0).toString();
-            if (response.contains("\n")) {
-                response = response.substring(response.indexOf('\n') + 1);
-            }
-            if (notInputText(event)) {
-                // not more input panels / LAST MESSAGE
-                // sent 'OK' button
-                clickOnButton(event, 0);
-                USSDController.instance.isRunning = false;
-                USSDController.instance.callbackInvoke.over(response);
-            } else {
-                // sent option 1
-
-                if (USSDController.instance.sendSign)
-                    USSDController.instance.callbackMessage.responseMessage(response);
-                else
-                    USSDController.instance.callbackInvoke.responseInvoke(response);
-
-//                if (USSDController.instance.callbackMessage == null)
-//                    USSDController.instance.callbackInvoke.responseInvoke(response);
-//                else {
-//                    USSDController.instance.callbackMessage.responseMessage(response);
-//                    USSDController.instance.callbackMessage = null;
-//                }
-            }
-        }
+    if (USSDController.instance == null || !USSDController.instance.isRunning) {
+      return;
     }
 
-    /**
-     * Send whatever you want via USSD
-     *
-     * @param text any string
-     */
-    public static void send(String text) {
-        setTextIntoField(event, text);
-        clickOnButton(event, 1);
-    }
+    if (LoginView(event) && notInputText(event)) {
+      // first view or logView, do nothing, pass / FIRST MESSAGE
+      clickOnButton(event, 0);
+      USSDController.instance.isRunning = false;
+      USSDController.instance.callbackInvoke.over(event.getText().get(0).toString());
+    } else if (problemView(event) || LoginView(event)) {
+      // deal down
+      clickOnButton(event, 1);
+      USSDController.instance.callbackInvoke.over(event.getText().get(0).toString());
+    } else if (isUSSDWidget(event)) {
+      // ready for work
 
-    public static void cancel() {
+      // String response = event.getText().get(0).toString();
+
+      String response = event.getText().stream()
+          .map(CharSequence::toString)
+          .collect(Collectors.joining("\t\n"));
+
+      if (response.contains("\n")) {
+        response = response.substring(response.indexOf('\n') + 1);
+      }
+      if (notInputText(event)) {
+        // not more input panels / LAST MESSAGE
+        // sent 'OK' button
         clickOnButton(event, 0);
+        USSDController.instance.isRunning = false;
+        USSDController.instance.callbackInvoke.over(response);
+      } else {
+        // sent option 1
+
+        if (USSDController.instance.sendSign)
+          USSDController.instance.callbackMessage.responseMessage(response);
+        else
+          USSDController.instance.callbackInvoke.responseInvoke(response);
+
+        // if (USSDController.instance.callbackMessage == null)
+        // USSDController.instance.callbackInvoke.responseInvoke(response);
+        // else {
+        // USSDController.instance.callbackMessage.responseMessage(response);
+        // USSDController.instance.callbackMessage = null;
+        // }
+      }
     }
+  }
 
-    /**
-     * set text into input text at USSD widget
-     *
-     * @param event AccessibilityEvent
-     * @param data  Any String
-     */
-    private static void setTextIntoField(AccessibilityEvent event, String data) {
-        USSDController ussdController = USSDController.instance;
-        Bundle arguments = new Bundle();
-        arguments.putCharSequence(
-                AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, data);
+  /**
+   * Send whatever you want via USSD
+   *
+   * @param text any string
+   */
+  public static void send(String text) {
+    setTextIntoField(event, text);
+    clickOnButton(event, 1);
+  }
 
-        for (AccessibilityNodeInfo leaf : getLeaves(event)) {
-            if (leaf.getClassName().equals("android.widget.EditText")
-                && !leaf.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)) {
-                ClipboardManager clipboardManager = ((ClipboardManager) ussdController.context
-                        .getSystemService(Context.CLIPBOARD_SERVICE));
-                if (clipboardManager != null) {
-                    clipboardManager.setPrimaryClip(ClipData.newPlainText("text", data));
-                }
+  public static void cancel() {
+    clickOnButton(event, 0);
+  }
 
-                leaf.performAction(AccessibilityNodeInfo.ACTION_PASTE);
-            }
-        }
-    }
+  /**
+   * set text into input text at USSD widget
+   *
+   * @param event AccessibilityEvent
+   * @param data  Any String
+   */
+  private static void setTextIntoField(AccessibilityEvent event, String data) {
+    USSDController ussdController = USSDController.instance;
+    Bundle arguments = new Bundle();
+    arguments.putCharSequence(
+        AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, data);
 
-    /**
-     * Method evaluate if USSD widget has input text
-     *
-     * @param event AccessibilityEvent
-     * @return boolean has or not input text
-     */
-    protected static boolean notInputText(AccessibilityEvent event) {
-        boolean flag = true;
-        for (AccessibilityNodeInfo leaf : getLeaves(event)) {
-            if (leaf.getClassName().equals("android.widget.EditText")) flag = false;
-        }
-        return flag;
-    }
-
-    /**
-     * The AccessibilityEvent is instance of USSD Widget class
-     *
-     * @param event AccessibilityEvent
-     * @return boolean AccessibilityEvent is USSD
-     */
-    private boolean isUSSDWidget(AccessibilityEvent event) {
-        return (event.getClassName().equals("amigo.app.AmigoAlertDialog")
-                || event.getClassName().equals("android.app.AlertDialog"));
-    }
-
-    /**
-     * The View has a login message into USSD Widget
-     *
-     * @param event AccessibilityEvent
-     * @return boolean USSD Widget has login message
-     */
-    private boolean LoginView(AccessibilityEvent event) {
-        return isUSSDWidget(event)
-               && USSDController.instance.map.get(USSDController.KEY_LOGIN)
-                       .contains(event.getText().get(0).toString());
-    }
-
-    /**
-     * The View has a problem message into USSD Widget
-     *
-     * @param event AccessibilityEvent
-     * @return boolean USSD Widget has problem message
-     */
-    protected boolean problemView(AccessibilityEvent event) {
-        return isUSSDWidget(event)
-               && USSDController.instance.map.get(USSDController.KEY_ERROR)
-                       .contains(event.getText().get(0).toString());
-    }
-
-    /**
-     * click a button using the index
-     *
-     * @param event AccessibilityEvent
-     * @param index button's index
-     */
-    protected static void clickOnButton(AccessibilityEvent event, int index) {
-        int count = -1;
-        for (AccessibilityNodeInfo leaf : getLeaves(event)) {
-            if (leaf.getClassName().toString().toLowerCase().contains("button")) {
-                count++;
-                if (count == index) {
-                    leaf.performAction(AccessibilityNodeInfo.ACTION_CLICK);
-                }
-            }
-        }
-    }
-
-    private static List<AccessibilityNodeInfo> getLeaves(AccessibilityEvent event) {
-        List<AccessibilityNodeInfo> leaves = new ArrayList<>();
-        if (event.getSource() != null) {
-            getLeaves(leaves, event.getSource());
+    for (AccessibilityNodeInfo leaf : getLeaves(event)) {
+      if (leaf.getClassName().equals("android.widget.EditText")
+          && !leaf.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)) {
+        ClipboardManager clipboardManager = ((ClipboardManager) ussdController.context
+            .getSystemService(Context.CLIPBOARD_SERVICE));
+        if (clipboardManager != null) {
+          clipboardManager.setPrimaryClip(ClipData.newPlainText("text", data));
         }
 
-        return leaves;
+        leaf.performAction(AccessibilityNodeInfo.ACTION_PASTE);
+      }
     }
+  }
 
-    private static void getLeaves(List<AccessibilityNodeInfo> leaves, AccessibilityNodeInfo node) {
-        if (node.getChildCount() == 0) {
-            leaves.add(node);
-            return;
+  /**
+   * Method evaluate if USSD widget has input text
+   *
+   * @param event AccessibilityEvent
+   * @return boolean has or not input text
+   */
+  protected static boolean notInputText(AccessibilityEvent event) {
+    boolean flag = true;
+    for (AccessibilityNodeInfo leaf : getLeaves(event)) {
+      if (leaf.getClassName().equals("android.widget.EditText"))
+        flag = false;
+    }
+    return flag;
+  }
+
+  /**
+   * The AccessibilityEvent is instance of USSD Widget class
+   *
+   * @param event AccessibilityEvent
+   * @return boolean AccessibilityEvent is USSD
+   */
+  private boolean isUSSDWidget(AccessibilityEvent event) {
+    return (event.getClassName().equals("amigo.app.AmigoAlertDialog")
+        || event.getClassName().equals("android.app.AlertDialog"));
+  }
+
+  /**
+   * The View has a login message into USSD Widget
+   *
+   * @param event AccessibilityEvent
+   * @return boolean USSD Widget has login message
+   */
+  private boolean LoginView(AccessibilityEvent event) {
+    return isUSSDWidget(event)
+        && USSDController.instance.map.get(USSDController.KEY_LOGIN)
+            .contains(event.getText().get(0).toString());
+  }
+
+  /**
+   * The View has a problem message into USSD Widget
+   *
+   * @param event AccessibilityEvent
+   * @return boolean USSD Widget has problem message
+   */
+  protected boolean problemView(AccessibilityEvent event) {
+    return isUSSDWidget(event)
+        && USSDController.instance.map.get(USSDController.KEY_ERROR)
+            .contains(event.getText().get(0).toString());
+  }
+
+  /**
+   * click a button using the index
+   *
+   * @param event AccessibilityEvent
+   * @param index button's index
+   */
+  protected static void clickOnButton(AccessibilityEvent event, int index) {
+    int count = -1;
+    for (AccessibilityNodeInfo leaf : getLeaves(event)) {
+      if (leaf.getClassName().toString().toLowerCase().contains("button")) {
+        count++;
+        if (count == index) {
+          leaf.performAction(AccessibilityNodeInfo.ACTION_CLICK);
         }
+      }
+    }
+  }
 
-        for (int i = 0; i < node.getChildCount(); i++) {
-            getLeaves(leaves, node.getChild(i));
-        }
+  private static List<AccessibilityNodeInfo> getLeaves(AccessibilityEvent event) {
+    List<AccessibilityNodeInfo> leaves = new ArrayList<>();
+    if (event.getSource() != null) {
+      getLeaves(leaves, event.getSource());
     }
 
-    /**
-     * Active when SO interrupt the application
-     */
-    @Override
-    public void onInterrupt() {
-        Log.d(TAG, "onInterrupt");
+    return leaves;
+  }
+
+  private static void getLeaves(List<AccessibilityNodeInfo> leaves, AccessibilityNodeInfo node) {
+    if (node.getChildCount() == 0) {
+      leaves.add(node);
+      return;
     }
 
-    /**
-     * Configure accessibility server from Android Operative System
-     */
-    @Override
-    protected void onServiceConnected() {
-        super.onServiceConnected();
-        Log.d(TAG, "onServiceConnected");
+    for (int i = 0; i < node.getChildCount(); i++) {
+      getLeaves(leaves, node.getChild(i));
     }
+  }
+
+  /**
+   * Active when SO interrupt the application
+   */
+  @Override
+  public void onInterrupt() {
+    Log.d(TAG, "onInterrupt");
+  }
+
+  /**
+   * Configure accessibility server from Android Operative System
+   */
+  @Override
+  protected void onServiceConnected() {
+    super.onServiceConnected();
+    Log.d(TAG, "onServiceConnected");
+  }
 }
