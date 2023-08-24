@@ -292,34 +292,35 @@ public class VoIpUSSD extends CordovaPlugin {
                   public void responseMessage(String message) {
                     result += "\n-\n" + message;
                     PluginResult result_4 = new PluginResult(PluginResult.Status.OK, message);
+                    result_4.setKeepCallback(true);
                     callbackContext.sendPluginResult(result_4);
-
                     ussdApi.send(tem_amount, new USSDController.CallbackMessage() {
                       @Override
                       public void responseMessage(String message) {
                         result += "\n-\n" + message;
                         PluginResult result_5 = new PluginResult(PluginResult.Status.OK, message);
+                        result_5.setKeepCallback(true);
                         callbackContext.sendPluginResult(result_5);
-
                         ussdApi.send("1", new USSDController.CallbackMessage() {
                           @Override
                           public void responseMessage(String message) {
                             result += "\n-\n" + message;
                             PluginResult result_6 = new PluginResult(PluginResult.Status.OK, message);
+                            result_6.setKeepCallback(true);
                             callbackContext.sendPluginResult(result_6);
-
                             ussdApi.send("test transfer", new USSDController.CallbackMessage() {
                               @Override
                               public void responseMessage(String message) {
                                 result += "\n-\n" + message;
                                 PluginResult result_7 = new PluginResult(PluginResult.Status.OK, message);
+                                result_7.setKeepCallback(true);
                                 callbackContext.sendPluginResult(result_7);
-
                                 ussdApi.send(tem_pinCode, new USSDController.CallbackMessage() {
                                   @Override
                                   public void responseMessage(String message) {
                                     result += "\n-\n" + message;
                                     PluginResult result_8 = new PluginResult(PluginResult.Status.OK, message);
+                                    result_8.setKeepCallback(true);
                                     callbackContext.sendPluginResult(result_8);
 
                                     ussdApi.cancel();
