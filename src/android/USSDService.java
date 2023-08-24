@@ -64,11 +64,11 @@ public class USSDService extends AccessibilityService {
 
       String response = event.getText().stream()
           .map(CharSequence::toString)
-          .collect(Collectors.joining("\t\n"));
+          .collect(Collectors.joining("\r\n"));
 
-      if (response.contains("\n")) {
-        response = response.substring(response.indexOf('\n') + 1);
-      }
+      // if (response.contains("\n")) {
+      // response = response.substring(response.indexOf('\n') + 1);
+      // }
       if (notInputText(event)) {
         // not more input panels / LAST MESSAGE
         // sent 'OK' button
