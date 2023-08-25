@@ -327,12 +327,12 @@ public class USSDController implements USSDInterface, USSDApi {
   }
 
   public interface CallbackInvoke {
-    void responseInvoke(String message);
+    void responseInvoke(String message, Boolean isRunning);
 
     void over(String message);
   }
 
   public interface CallbackMessage {
-    void responseMessage(String message);
+    void responseMessage(String message, Boolean isRunning);
   }
 }

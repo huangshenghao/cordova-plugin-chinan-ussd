@@ -75,13 +75,19 @@ public class USSDService extends AccessibilityService {
         clickOnButton(event, 0);
         USSDController.instance.isRunning = false;
         USSDController.instance.callbackInvoke.over(response);
+
+        if (USSDController.instance.sendSign)
+          USSDController.instance.callbackMessage.responseMessage(response, false);
+        else
+          USSDController.instance.callbackInvoke.responseInvoke(response, false);
+
       } else {
         // sent option 1
 
         if (USSDController.instance.sendSign)
-          USSDController.instance.callbackMessage.responseMessage(response);
+          USSDController.instance.callbackMessage.responseMessage(response, true);
         else
-          USSDController.instance.callbackInvoke.responseInvoke(response);
+          USSDController.instance.callbackInvoke.responseInvoke(response, true);
 
         // if (USSDController.instance.callbackMessage == null)
         // USSDController.instance.callbackInvoke.responseInvoke(response);
