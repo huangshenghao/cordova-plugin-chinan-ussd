@@ -285,42 +285,48 @@ public class VoIpUSSD extends CordovaPlugin {
                 @Override
                 public void responseMessage(String message) {
                   result += "\n-\n" + message;
-                  PluginResult result_3 = new PluginResult(PluginResult.Status.OK, message);
+                  PluginResult result_3 = new PluginResult(PluginResult.Status.OK,
+                      message + " -- " + (ussdApi == null));
                   result_3.setKeepCallback(true);
                   callbackContext.sendPluginResult(result_3);
                   ussdApi.send(tem_account, new USSDController.CallbackMessage() {
                     @Override
                     public void responseMessage(String message) {
                       result += "\n-\n" + message;
-                      PluginResult result_4 = new PluginResult(PluginResult.Status.OK, message);
+                      PluginResult result_4 = new PluginResult(PluginResult.Status.OK,
+                          message + " -- " + (ussdApi == null));
                       result_4.setKeepCallback(true);
                       callbackContext.sendPluginResult(result_4);
                       ussdApi.send(tem_amount, new USSDController.CallbackMessage() {
                         @Override
                         public void responseMessage(String message) {
                           result += "\n-\n" + message;
-                          PluginResult result_5 = new PluginResult(PluginResult.Status.OK, message);
+                          PluginResult result_5 = new PluginResult(PluginResult.Status.OK,
+                              message + " -- " + (ussdApi == null));
                           result_5.setKeepCallback(true);
                           callbackContext.sendPluginResult(result_5);
                           ussdApi.send("1", new USSDController.CallbackMessage() {
                             @Override
                             public void responseMessage(String message) {
                               result += "\n-\n" + message;
-                              PluginResult result_6 = new PluginResult(PluginResult.Status.OK, message);
+                              PluginResult result_6 = new PluginResult(PluginResult.Status.OK,
+                                  message + " -- " + (ussdApi == null));
                               result_6.setKeepCallback(true);
                               callbackContext.sendPluginResult(result_6);
                               ussdApi.send("test transfer", new USSDController.CallbackMessage() {
                                 @Override
                                 public void responseMessage(String message) {
                                   result += "\n-\n" + message;
-                                  PluginResult result_7 = new PluginResult(PluginResult.Status.OK, message);
+                                  PluginResult result_7 = new PluginResult(PluginResult.Status.OK,
+                                      message + " -- " + (ussdApi == null));
                                   result_7.setKeepCallback(true);
                                   callbackContext.sendPluginResult(result_7);
                                   ussdApi.send(tem_pinCode, new USSDController.CallbackMessage() {
                                     @Override
                                     public void responseMessage(String message) {
                                       result += "\n-\n" + message;
-                                      PluginResult result_8 = new PluginResult(PluginResult.Status.OK, message);
+                                      PluginResult result_8 = new PluginResult(PluginResult.Status.OK,
+                                          message + " -- " + (ussdApi == null));
                                       result_8.setKeepCallback(true);
                                       callbackContext.sendPluginResult(result_8);
 
@@ -357,7 +363,7 @@ public class VoIpUSSD extends CordovaPlugin {
       callbackContext.sendPluginResult(result_ex1);
     }
 
-    PluginResult result_r = new PluginResult(PluginResult.Status.ERROR, "--------- done");
+    PluginResult result_r = new PluginResult(PluginResult.Status.OK, "--------- done");
     result_r.setKeepCallback(true);
     callbackContext.sendPluginResult(result_r);
 
