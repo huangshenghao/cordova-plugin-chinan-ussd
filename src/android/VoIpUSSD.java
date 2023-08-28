@@ -355,15 +355,12 @@ public class VoIpUSSD extends CordovaPlugin {
       PluginResult result_ex = new PluginResult(PluginResult.Status.ERROR, "--------- exception ex");
       result_ex.setKeepCallback(true);
       callbackContext.sendPluginResult(result_ex);
-
-      PluginResult result_ex1 = new PluginResult(PluginResult.Status.ERROR, "--------- exception ex1");
-      result_ex1.setKeepCallback(true);
-      callbackContext.sendPluginResult(result_ex1);
     }
 
-    PluginResult result_r = new PluginResult(PluginResult.Status.OK, "--------- done");
-    result_r.setKeepCallback(true);
-    callbackContext.sendPluginResult(result_r);
+    // PluginResult result_r = new PluginResult(PluginResult.Status.OK, "---------
+    // done");
+    // result_r.setKeepCallback(true);
+    // callbackContext.sendPluginResult(result_r);
 
   }
 
