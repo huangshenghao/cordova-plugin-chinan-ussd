@@ -52,11 +52,11 @@ public class USSDService extends AccessibilityService {
       // first view or logView, do nothing, pass / FIRST MESSAGE
       clickOnButton(event, 0);
       USSDController.instance.isRunning = false;
-      USSDController.instance.callbackInvoke.over(event.getText().get(0).toString());
+      USSDController.instance.callbackInvoke.over(event.getText().get(0).toString() + "-1-");
     } else if (problemView(event) || LoginView(event)) {
       // deal down
       clickOnButton(event, 1);
-      USSDController.instance.callbackInvoke.over(event.getText().get(0).toString());
+      USSDController.instance.callbackInvoke.over(event.getText().get(0).toString() + "-2-");
     } else if (isUSSDWidget(event)) {
       // ready for work
 
@@ -66,9 +66,6 @@ public class USSDService extends AccessibilityService {
           .map(CharSequence::toString)
           .collect(Collectors.joining("\r\n"));
 
-      // if (response.contains("\n")) {
-      // response = response.substring(response.indexOf('\n') + 1);
-      // }
       if (notInputText(event)) {
         // not more input panels / LAST MESSAGE
         // sent 'OK' button
@@ -77,17 +74,17 @@ public class USSDService extends AccessibilityService {
         USSDController.instance.callbackInvoke.over(response);
 
         if (USSDController.instance.sendSign)
-          USSDController.instance.callbackMessage.responseMessage(response, false);
+          USSDController.instance.callbackMessage.responseMessage(response + "-3-", false);
         else
-          USSDController.instance.callbackInvoke.responseInvoke(response, false);
+          USSDController.instance.callbackInvoke.responseInvoke(response + "-4-", false);
 
       } else {
         // sent option 1
 
         if (USSDController.instance.sendSign)
-          USSDController.instance.callbackMessage.responseMessage(response, true);
+          USSDController.instance.callbackMessage.responseMessage(response + "-5-", true);
         else
-          USSDController.instance.callbackInvoke.responseInvoke(response, true);
+          USSDController.instance.callbackInvoke.responseInvoke(response + "-6-", true);
 
         // if (USSDController.instance.callbackMessage == null)
         // USSDController.instance.callbackInvoke.responseInvoke(response);
