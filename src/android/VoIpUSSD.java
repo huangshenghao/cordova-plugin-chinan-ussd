@@ -330,6 +330,13 @@ public class VoIpUSSD extends CordovaPlugin {
 
                                       ussdApi.cancel();
 
+                                      if (isRunning) {
+                                        PluginResult result_9 = new PluginResult(PluginResult.Status.OK,
+                                            "manual cancel" + " -- " + (!isRunning));
+                                        result_9.setKeepCallback(true);
+                                        callbackContext.sendPluginResult(result_9);
+                                      }
+
                                     }
                                   });
                                 }
