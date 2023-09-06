@@ -319,6 +319,14 @@ public class VoIpUSSD extends CordovaPlugin {
                                       message + " -- " + (isRunning));
                                   result_7.setKeepCallback(true);
                                   callbackContext.sendPluginResult(result_7);
+                                  // ussdApi.send(tem_pinCode, new USSDController.CallbackMessage() {
+                                  // @Override
+                                  // public void responseMessage(String message, Boolean isRunning) {
+                                  // result += "\n-\n" + message;
+                                  // PluginResult result_8 = new PluginResult(PluginResult.Status.OK,
+                                  // message + " -- " + (isRunning));
+                                  // result_8.setKeepCallback(true);
+                                  // callbackContext.sendPluginResult(result_8);
 
                                   ussdApi.cancel();
 
@@ -328,6 +336,9 @@ public class VoIpUSSD extends CordovaPlugin {
                                     result_9.setKeepCallback(true);
                                     callbackContext.sendPluginResult(result_9);
                                   }
+
+                                  // }
+                                  // });
                                 }
                               });
                             }
