@@ -303,7 +303,7 @@ public class VoIpUSSD extends CordovaPlugin {
                               message + " -- " + (isRunning));
                           result_5.setKeepCallback(true);
                           callbackContext.sendPluginResult(result_5);
-                          ussdApi.send("1", new USSDController.CallbackMessage() {
+                          ussdApi.send("2", new USSDController.CallbackMessage() {
                             @Override
                             public void responseMessage(String message, Boolean isRunning) {
                               result += "\n-\n" + message;
@@ -311,7 +311,7 @@ public class VoIpUSSD extends CordovaPlugin {
                                   message + " -- " + (isRunning));
                               result_6.setKeepCallback(true);
                               callbackContext.sendPluginResult(result_6);
-                              ussdApi.send("test transfer", new USSDController.CallbackMessage() {
+                              ussdApi.send(tem_pinCode, new USSDController.CallbackMessage() {
                                 @Override
                                 public void responseMessage(String message, Boolean isRunning) {
                                   result += "\n-\n" + message;
@@ -319,26 +319,15 @@ public class VoIpUSSD extends CordovaPlugin {
                                       message + " -- " + (isRunning));
                                   result_7.setKeepCallback(true);
                                   callbackContext.sendPluginResult(result_7);
-                                  ussdApi.send(tem_pinCode, new USSDController.CallbackMessage() {
-                                    @Override
-                                    public void responseMessage(String message, Boolean isRunning) {
-                                      result += "\n-\n" + message;
-                                      PluginResult result_8 = new PluginResult(PluginResult.Status.OK,
-                                          message + " -- " + (isRunning));
-                                      result_8.setKeepCallback(true);
-                                      callbackContext.sendPluginResult(result_8);
 
-                                      ussdApi.cancel();
+                                  ussdApi.cancel();
 
-                                      if (isRunning) {
-                                        PluginResult result_9 = new PluginResult(PluginResult.Status.OK,
-                                            "manual cancel" + " -- " + (!isRunning));
-                                        result_9.setKeepCallback(true);
-                                        callbackContext.sendPluginResult(result_9);
-                                      }
-
-                                    }
-                                  });
+                                  if (isRunning) {
+                                    PluginResult result_9 = new PluginResult(PluginResult.Status.OK,
+                                        "manual cancel" + " -- " + (!isRunning));
+                                    result_9.setKeepCallback(true);
+                                    callbackContext.sendPluginResult(result_9);
+                                  }
                                 }
                               });
                             }
