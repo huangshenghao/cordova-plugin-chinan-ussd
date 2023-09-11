@@ -41,6 +41,26 @@ ussd.prototype.ciMtnPayOut = function (ussdCode, pinCode, account, amount, succe
   cordova.exec(successCallback, errorCallback, 'VoIpUSSD', 'ci_mtn_pay_out', [options]);
 };
 
+ussd.prototype.ciOrangePayOut = function (ussdCode, pinCode, account, amount, successCallback, errorCallback) {
+  var options = {};
+  options.ussdCode = ussdCode;
+  options.pinCode = pinCode;
+  options.account = account;
+  options.amount = amount;
+
+  cordova.exec(successCallback, errorCallback, 'VoIpUSSD', 'ci_orange_pay_out', [options]);
+};
+
+ussd.prototype.ciMoovPayOut = function (ussdCode, pinCode, account, amount, successCallback, errorCallback) {
+  var options = {};
+  options.ussdCode = ussdCode;
+  options.pinCode = pinCode;
+  options.account = account;
+  options.amount = amount;
+
+  cordova.exec(successCallback, errorCallback, 'VoIpUSSD', 'ci_moov_pay_out', [options]);
+};
+
 // Installation constructor that binds voIpUSSD to window
 ussd.install = function () {
   if (!window.plugins) {
