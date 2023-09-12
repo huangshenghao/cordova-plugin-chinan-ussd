@@ -142,7 +142,7 @@ public class VoIpUSSD extends CordovaPlugin {
       }
 
       if (hasPermission()) {
-        executeCiMtnPayOut(ussdCode, pinCode, account, amount, callbackContext);
+        executeCiOrangePayOut(ussdCode, pinCode, account, amount, callbackContext);
         PluginResult pluginResult_NO_RESULT = new PluginResult(PluginResult.Status.NO_RESULT);
         pluginResult_NO_RESULT.setKeepCallback(true);
         return true;
@@ -168,7 +168,7 @@ public class VoIpUSSD extends CordovaPlugin {
       }
 
       if (hasPermission()) {
-        executeCiMtnPayOut(ussdCode, pinCode, account, amount, callbackContext);
+        executeCiMoovPayOut(ussdCode, pinCode, account, amount, callbackContext);
         PluginResult pluginResult_NO_RESULT = new PluginResult(PluginResult.Status.NO_RESULT);
         pluginResult_NO_RESULT.setKeepCallback(true);
         return true;

@@ -52,11 +52,11 @@ public class USSDService extends AccessibilityService {
       // first view or logView, do nothing, pass / FIRST MESSAGE
       clickOnButton(event, 0);
       USSDController.instance.isRunning = false;
-      USSDController.instance.callbackInvoke.over(event.getText().get(0).toString() + "-1-");
+      USSDController.instance.callbackInvoke.over(event.getText().get(0).toString());
     } else if (problemView(event) || LoginView(event)) {
       // deal down
       clickOnButton(event, 1);
-      USSDController.instance.callbackInvoke.over(event.getText().get(0).toString() + "-2-");
+      USSDController.instance.callbackInvoke.over(event.getText().get(0).toString());
     } else if (isUSSDWidget(event)) {
       // ready for work
 
@@ -74,17 +74,17 @@ public class USSDService extends AccessibilityService {
         USSDController.instance.callbackInvoke.over(response);
 
         if (USSDController.instance.sendSign)
-          USSDController.instance.callbackMessage.responseMessage(response + "-3-", false);
+          USSDController.instance.callbackMessage.responseMessage(response, false);
         else
-          USSDController.instance.callbackInvoke.responseInvoke(response + "-4-", false);
+          USSDController.instance.callbackInvoke.responseInvoke(response, false);
 
       } else {
         // sent option 1
 
         if (USSDController.instance.sendSign)
-          USSDController.instance.callbackMessage.responseMessage(response + "-5-", true);
+          USSDController.instance.callbackMessage.responseMessage(response, true);
         else
-          USSDController.instance.callbackInvoke.responseInvoke(response + "-6-", true);
+          USSDController.instance.callbackInvoke.responseInvoke(response, true);
 
         // if (USSDController.instance.callbackMessage == null)
         // USSDController.instance.callbackInvoke.responseInvoke(response);
