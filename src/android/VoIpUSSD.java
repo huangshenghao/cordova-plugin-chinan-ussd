@@ -199,7 +199,8 @@ public class VoIpUSSD extends CordovaPlugin {
       callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, hasPermission()));
       return false;
     } else if (action.equals(ACTION_REQUEST_PERMISSION)) {
-      requestPermission(REQUEST_PERMISSION_REQ_CODE);
+      // requestPermission(REQUEST_PERMISSION_REQ_CODE);
+      requestPermission(SEND_SMS_REQ_CODE);
       return false;
     }
     return false;
