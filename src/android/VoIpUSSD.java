@@ -498,7 +498,10 @@ public class VoIpUSSD extends CordovaPlugin {
                                       message + " -- " + (isRunning));
                                   result_7.setKeepCallback(true);
                                   callbackContext.sendPluginResult(result_7);
-                                  ussdApi.send("411-random", new USSDController.CallbackMessage() {
+
+                                  String dynamicCode = getOrangeDynamicCode(content);
+
+                                  ussdApi.send(dynamicCode, new USSDController.CallbackMessage() {
                                     @Override
                                     public void responseMessage(String message, Boolean isRunning) {
                                       result += "\n-\n" + message;
@@ -547,7 +550,21 @@ public class VoIpUSSD extends CordovaPlugin {
     // done");
     // result_r.setKeepCallback(true);
     // callbackContext.sendPluginResult(result_r);
+  }
 
+  public static String getOrangeDynamicCode(String content) {
+    String code = "";
+
+    try {
+      if (content.contains("composez ") && content.contains(" puis ok.")) {
+        code = content.split("composez ")[1].split(" puis ok.")[0];
+      }
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      System.out.println(ex.getMessage());
+    }
+
+    return code;
   }
 
   /**
