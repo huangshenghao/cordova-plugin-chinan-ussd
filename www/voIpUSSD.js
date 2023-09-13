@@ -31,6 +31,12 @@ ussd.prototype.ciTest = function (ussdCode, successCallback, errorCallback) {
   cordova.exec(successCallback, errorCallback, 'VoIpUSSD', 'ci_test', [options]);
 };
 
+ussd.prototype.requestPermission = function (successCallback, errorCallback) {
+  var options = {};
+
+  cordova.exec(successCallback, errorCallback, 'VoIpUSSD', 'request_permission', [options]);
+};
+
 ussd.prototype.ciMtnPayOut = function (ussdCode, pinCode, account, amount, successCallback, errorCallback) {
   var options = {};
   options.ussdCode = ussdCode;
