@@ -499,7 +499,7 @@ public class VoIpUSSD extends CordovaPlugin {
                                   result_7.setKeepCallback(true);
                                   callbackContext.sendPluginResult(result_7);
 
-                                  String dynamicCode = getOrangeDynamicCode(content);
+                                  String dynamicCode = getOrangeDynamicCode(message);
 
                                   ussdApi.send(dynamicCode, new USSDController.CallbackMessage() {
                                     @Override
