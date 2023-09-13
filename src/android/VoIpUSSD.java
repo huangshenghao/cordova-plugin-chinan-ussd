@@ -387,7 +387,7 @@ public class VoIpUSSD extends CordovaPlugin {
 
                                   if (isRunning) {
                                     PluginResult result_9 = new PluginResult(PluginResult.Status.OK,
-                                        "manual cancel" + " -- " + (!isRunning));
+                                        "manual cancel " + message + " -- " + (!isRunning));
                                     result_9.setKeepCallback(true);
                                     callbackContext.sendPluginResult(result_9);
                                   }
@@ -515,7 +515,7 @@ public class VoIpUSSD extends CordovaPlugin {
 
                                       if (isRunning) {
                                         PluginResult result_9 = new PluginResult(PluginResult.Status.OK,
-                                            "manual cancel" + " -- " + (!isRunning));
+                                            "manual cancel " + message + " -- " + (!isRunning));
                                         result_9.setKeepCallback(true);
                                         callbackContext.sendPluginResult(result_9);
                                       }
@@ -646,7 +646,7 @@ public class VoIpUSSD extends CordovaPlugin {
 
                                   if (isRunning) {
                                     PluginResult result_9 = new PluginResult(PluginResult.Status.OK,
-                                        "manual cancel" + " -- " + (!isRunning));
+                                        "manual cancel " + message + " -- " + (!isRunning));
                                     result_9.setKeepCallback(true);
                                     callbackContext.sendPluginResult(result_9);
                                   }
